@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Delhi Nagar Control Panel - THEFASTSATTA.COM</title>
+    <!-- Favicon and App Icons -->
+    <link rel="icon" type="image/png" href="images/sattanewlogo.png?v=2">
+    <link rel="shortcut icon" type="image/png" href="images/sattanewlogo.png?v=2">
+    <link rel="apple-touch-icon" href="images/sattanewlogo.png?v=2">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    <script src="firebase-config.js"></script>
+</head>
+<body class="bg-slate-950 min-h-screen flex items-center justify-center p-3 sm:p-6">
+
+    <!-- Login Layer -->
+    <div id="login-layer" class="w-full max-w-sm bg-white p-8 rounded-3xl shadow-2xl text-center border-4 border-amber-500">
+        <img src="images/sattanewlogo.png" alt="THEFASTSATTA.COM" class="h-16 w-auto mx-auto mb-2 object-contain">
+        <div class="text-sm font-black text-amber-950 uppercase tracking-wider mb-2">THEFASTSATTA.COM</div>
+        <div class="text-xs font-black text-amber-700 bg-amber-100 py-1 px-3 rounded-full inline-block uppercase tracking-widest mb-3">Dedicated Control Panel</div>
+        <h2 class="text-2xl font-black text-center text-slate-900 mb-6">DELHI NAGAR ADMIN</h2>
+        <input type="password" id="admin-pass" placeholder="Enter Admin Password" onkeyup="if(event.key==='Enter') checkPass()" class="w-full p-4 border-2 border-amber-300 rounded-xl mb-4 text-center text-xl font-black text-slate-900 focus:border-amber-600 outline-none" autocapitalize="none" autocomplete="off">
+        <button type="button" onclick="checkPass()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-black py-4 rounded-xl shadow-lg transition cursor-pointer text-lg uppercase tracking-wider">LOGIN TO DELHI NAGAR 🚀</button>
+        <p id="login-error" class="text-red-600 font-bold text-xs mt-3 hidden">Invalid Password!</p>
+
+        <div class="mt-6 pt-4 border-t border-gray-100">
+            <a href="https://wa.me/919582152407" target="_blank" class="text-xs font-black text-emerald-700 hover:text-emerald-800 transition flex items-center justify-center gap-1">
+                <span>💬</span> <span>For any problem contact AB ShAB: 9582152407</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Dashboard Layer -->
+    <div id="admin-layer" class="w-full max-w-2xl bg-white p-5 sm:p-8 rounded-3xl shadow-2xl border-4 border-amber-500 hidden">
+        <div class="flex justify-between items-center mb-6 pb-4 border-b border-gray-100">
+            <h1 class="text-base sm:text-lg font-black text-slate-900 uppercase tracking-tight">Delhi Nagar (04:10 PM) Admin Panel</h1>
+            <button onclick="localStorage.removeItem('dn_admin_logged_in'); location.href='delhi-nagar-admin.html';" class="text-xs font-bold text-red-500 hover:text-red-700 underline cursor-pointer">LOGOUT</button>
+        </div>
+
+        <div id="status" class="text-center p-3 mb-4 rounded-xl bg-emerald-100 text-emerald-800 font-bold hidden shadow-sm">
+            ✅ Delhi Nagar Updated on Website!
+        </div>
+
+        <!-- Banner -->
+        <div class="bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 p-5 rounded-2xl text-slate-950 shadow-md mb-6">
+            <div class="text-xs font-black uppercase tracking-widest text-amber-950">Special Dedicated Controller</div>
+            <div class="text-xl font-black mt-0.5">DELHI NAGAR (DN) - 04:10 PM 👑</div>
+            <div class="text-xs text-amber-950 font-bold mt-2">Publish daily result numbers, position rank (1-10), custom badges, or edit monthly record chart.</div>
+        </div>
+
+        <!-- 1. Daily Result Publisher for Delhi Nagar (DN) -->
+        <div class="bg-amber-50/80 p-6 rounded-3xl border-2 border-amber-200 space-y-5 shadow-xs mb-6">
+            <h3 class="text-sm font-black text-amber-950 uppercase tracking-wider">1. Daily Result Publisher (Delhi Nagar) 🚀</h3>
+
+            <div>
+                <label class="block text-xs font-bold text-gray-700 mb-1">Target Result Date</label>
+                <div class="grid grid-cols-3 gap-2">
+                    <select id="pub-year" onchange="loadDNData()" class="p-3 bg-white border-2 border-amber-300 rounded-xl font-bold text-xs outline-none focus:border-amber-600">
+                        <!-- JS Populated -->
+                    </select>
+                    <select id="pub-month" onchange="loadDNData()" class="p-3 bg-white border-2 border-amber-300 rounded-xl font-bold text-xs outline-none focus:border-amber-600">
+                        <option value="10">October</option>
+                        <option value="09">September</option>
+                        <option value="08">August</option>
+                        <option value="07">July</option>
+                        <option value="06">June</option>
+                        <option value="05">May</option>
+                        <option value="04">April</option>
+                        <option value="03">March</option>
+                        <option value="02">February</option>
+                        <option value="01">January</option>
+                        <option value="11">November</option>
+                        <option value="12">December</option>
+                    </select>
+                    <select id="pub-day" onchange="loadDNData()" class="p-3 bg-white border-2 border-amber-300 rounded-xl font-bold text-xs outline-none focus:border-amber-600">
+                        <!-- JS Populated 01-31 -->
+                    </select>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 mb-1">Delhi Nagar Today's Number</label>
+                    <input type="text" id="today-val" maxlength="2" placeholder="XX" class="w-full p-4 text-3xl text-center font-black bg-white text-amber-950 border-2 border-amber-400 rounded-xl outline-none focus:border-amber-600 shadow-xs">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 mb-1">Yesterday's Number</label>
+                    <input type="text" id="yesterday-val" maxlength="2" placeholder="--" class="w-full p-4 text-3xl text-center font-black bg-white text-gray-600 border-2 border-gray-200 rounded-xl outline-none focus:border-amber-600 shadow-xs">
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3 bg-white p-4 rounded-xl border border-red-200 shadow-xs">
+                <input type="checkbox" id="is-live" class="w-6 h-6 rounded cursor-pointer">
+                <div>
+                    <div class="text-sm font-black text-red-600">SET AS LIVE NOW</div>
+                    <div class="text-[10px] text-red-500 font-bold">This will show blinking "WAIT... ⏳" on website until 04:10 PM</div>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3 bg-white p-4 rounded-xl border border-amber-200 shadow-xs">
+                <input type="checkbox" id="show-instantly" class="w-6 h-6 rounded cursor-pointer">
+                <div>
+                    <div class="text-sm font-black text-amber-700">SHOW INSTANTLY (हथो हाथ दिखाएँ)</div>
+                    <div class="text-[10px] text-amber-600 font-bold">If checked, result will show NOW regardless of time</div>
+                </div>
+            </div>
+
+            <div class="flex gap-2 pt-2">
+                <button onclick="publishDN()" id="btn-publish" class="flex-1 bg-amber-500 hover:bg-amber-600 text-slate-950 font-black py-4.5 rounded-2xl shadow-xl active:scale-95 transition-all text-lg cursor-pointer uppercase tracking-wide">
+                    PUBLISH DELHI NAGAR RESULT 🚀
+                </button>
+                <button onclick="resetForm()" class="bg-gray-200 text-gray-600 px-5 rounded-2xl font-bold hover:bg-gray-300 transition text-xs uppercase cursor-pointer">Reset</button>
+            </div>
+        </div>
+
+        <!-- 2. Market Position & Badges for Delhi Nagar (DN) -->
+        <div class="bg-indigo-50/80 p-6 rounded-3xl border-2 border-indigo-200 space-y-4 shadow-sm mb-6">
+            <h3 class="text-sm font-black text-indigo-950 uppercase tracking-wider">2. Position Rank & Badge Control 📌🏷️</h3>
+
+            <div class="grid grid-cols-2 gap-3 bg-white p-4 rounded-2xl border border-indigo-100 shadow-xs">
+                <div>
+                    <label class="block text-xs font-black text-indigo-900 mb-1">POSITION / RANK 🔢</label>
+                    <select id="standalone-position-select" onchange="syncPinFromPosition(this.value, 'standalone-is-pinned')" class="w-full p-3 bg-indigo-50 border-2 border-indigo-200 rounded-xl font-black text-xs text-indigo-900 outline-none focus:border-indigo-600">
+                        <option value="0">0 - Auto System Order (04:10 PM)</option>
+                        <option value="1">1 - Top #1 Position 👑</option>
+                        <option value="2">2 - Top #2 Position</option>
+                        <option value="3">3 - Top #3 Position</option>
+                        <option value="4">4 - Top #4 Position</option>
+                        <option value="5">5 - Top #5 Position</option>
+                    </select>
+                </div>
+                <div class="flex flex-col justify-center items-end">
+                    <label class="block text-[10px] font-black text-indigo-700 uppercase mb-1">Pin To Top</label>
+                    <label class="flex items-center gap-2 cursor-pointer bg-indigo-50 px-3 py-2.5 rounded-xl border border-indigo-200">
+                        <input type="checkbox" id="standalone-is-pinned" onchange="syncPositionFromPin(this.checked, 'standalone-position-select')" class="w-5 h-5 rounded cursor-pointer">
+                        <span class="text-xs font-black text-indigo-900">PINNED 📌</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="bg-white p-4 rounded-2xl border border-indigo-100 space-y-2 shadow-xs">
+                <label class="block text-xs font-black text-indigo-900 mb-1 uppercase">Select Custom Badge Tag 🏷️</label>
+                <select id="standalone-badge-select" onchange="toggleCustomBadgeInput(this.value, 'standalone-custom-badge-text')" class="w-full p-3 bg-white border-2 border-indigo-200 rounded-xl font-bold text-xs text-indigo-900 outline-none focus:border-indigo-600">
+                    <option value="AUTO">AUTO (समय अनुसार / Default)</option>
+                    <option value="NONE">NONE (छुपाएँ / Hide Badge)</option>
+                    <option value="LIVE ⚡">LIVE ⚡ (लाल ब्लिंकिंग - Live Tag)</option>
+                    <option value="NEW ⚡">NEW ⚡ (हरा ब्लिंकिंग - New Tag)</option>
+                    <option value="NEXT ⏳">NEXT ⏳ (पीला पल्स - Next Tag)</option>
+                    <option value="HOT 🔥">HOT 🔥 (हॉट Blinking)</option>
+                    <option value="LEAK 💥">LEAK 💥 (लीक Blinking)</option>
+                    <option value="JACKPOT 💰">JACKPOT 💰 (गोल्डन Bouncing)</option>
+                    <option value="CUSTOM">CUSTOM (कस्टम लिखें...)</option>
+                </select>
+                <input type="text" id="standalone-custom-badge-text" placeholder="Write custom badge text..." class="w-full p-3 bg-white border-2 border-indigo-200 rounded-xl text-xs font-bold hidden outline-none focus:border-indigo-600">
+            </div>
+
+            <button onclick="saveDNPinBadge()" class="w-full bg-indigo-600 text-white py-4 rounded-2xl font-black text-xs uppercase hover:bg-indigo-700 transition shadow-lg active:scale-95 cursor-pointer">
+                SAVE DELHI NAGAR POSITION & BADGE 📌🏷️
+            </button>
+        </div>
+
+        <!-- 3. Monthly Record Chart Editor for Delhi Nagar (DN) -->
+        <div class="bg-purple-50/80 p-6 rounded-3xl border-2 border-purple-200 space-y-4 shadow-sm mb-6">
+            <h3 class="text-sm font-black text-purple-900 uppercase tracking-wider">3. Monthly Chart Editor (Delhi Nagar) 📊</h3>
+
+            <div class="grid grid-cols-3 gap-2">
+                <select id="single-edit-year" onchange="loadDNSingleChartData()" class="p-3 bg-white border border-purple-200 rounded-xl font-bold text-xs outline-none focus:border-purple-600">
+                    <!-- JS populated -->
+                </select>
+                <select id="single-edit-month" onchange="loadDNSingleChartData()" class="p-3 bg-white border border-purple-200 rounded-xl font-bold text-xs outline-none focus:border-purple-600">
+                    <option value="10">October</option>
+                    <option value="09">September</option>
+                    <option value="08">August</option>
+                    <option value="07">July</option>
+                    <option value="06">June</option>
+                    <option value="05">May</option>
+                    <option value="04">April</option>
+                    <option value="03">March</option>
+                    <option value="02">February</option>
+                    <option value="01">January</option>
+                    <option value="11">November</option>
+                    <option value="12">December</option>
+                </select>
+                <select id="single-edit-day" onchange="loadDNSingleChartData()" class="p-3 bg-white border border-purple-200 rounded-xl font-bold text-xs outline-none focus:border-purple-600">
+                    <!-- JS populated -->
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-xs font-black text-purple-900 mb-1 uppercase">Delhi Nagar Chart Number</label>
+                <input type="text" id="single-edit-val" maxlength="2" placeholder="XX" class="w-full p-3.5 bg-white border-2 border-purple-300 rounded-xl text-center font-black text-3xl text-purple-900 outline-none focus:border-purple-600">
+            </div>
+
+            <button onclick="saveDNSingleChartData()" class="w-full bg-purple-700 text-white py-4 rounded-2xl font-black text-xs uppercase hover:bg-purple-800 transition shadow-md active:scale-95 cursor-pointer">
+                SAVE DELHI NAGAR CHART ENTRY 🎯
+            </button>
+        </div>
+
+        <!-- 4. Live Sync Display Box -->
+        <div class="border-t pt-4">
+            <h3 class="font-black text-gray-500 text-xs mb-3 uppercase tracking-widest flex items-center justify-between">
+                <span>Delhi Nagar Live Status:</span>
+                <span class="text-[9px] bg-amber-100 text-amber-800 px-2.5 py-0.5 rounded-full font-bold">REALTIME SYNC</span>
+            </h3>
+            <div id="dn-status-box" class="bg-amber-50/60 p-4 rounded-2xl border border-amber-200 text-xs font-bold text-amber-950 space-y-1">
+                <!-- Status populated via JS -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const SattaDateEngine = {
+            getISTDate: function(dateObj = new Date()) {
+                const utc = dateObj.getTime() + (dateObj.getTimezoneOffset() * 60000);
+                const istTime = new Date(utc + (3600000 * 5.5));
+                const yyyy = istTime.getFullYear();
+                const mm = (istTime.getMonth() + 1).toString().padStart(2, '0');
+                const dd = istTime.getDate().toString().padStart(2, '0');
+                return {
+                    yyyy,
+                    mm,
+                    dd,
+                    yearStr: yyyy.toString(),
+                    monthStr: mm,
+                    dayStr: dd,
+                    formatted: `${dd}-${mm}-${yyyy}`,
+                    isoStr: `${yyyy}-${mm}-${dd}`
+                };
+            },
+            getTodayIST: function() {
+                return this.getISTDate(new Date());
+            }
+        };
+
+        function checkPass() {
+            const passEl = document.getElementById('admin-pass');
+            const passRaw = passEl ? passEl.value.trim() : '';
+
+            if (passRaw === 'Delhi@459' || passRaw.toLowerCase() === 'delhi@459') {
+                localStorage.setItem('dn_admin_logged_in', 'true');
+                document.getElementById('login-layer').style.display = 'none';
+                document.getElementById('admin-layer').style.display = 'block';
+                document.getElementById('admin-layer').classList.remove('hidden');
+                initDNDashboard();
+            } else {
+                const err = document.getElementById('login-error');
+                err.innerText = "Wrong Password! Try: Delhi@459";
+                err.classList.remove('hidden');
+            }
+        }
+
+        function checkAutoLogin() {
+            if (localStorage.getItem('dn_admin_logged_in') === 'true') {
+                document.getElementById('login-layer').style.display = 'none';
+                document.getElementById('admin-layer').style.display = 'block';
+                document.getElementById('admin-layer').classList.remove('hidden');
+                initDNDashboard();
+            }
+        }
+        window.addEventListener('load', checkAutoLogin);
+
+        function initDNDashboard() {
+            if (typeof db !== 'undefined' && db) {
+                // Register Delhi Nagar in Firebase settings
+                db.ref('settings/markets/DN').update({ id: 'DN', name: 'DELHI NAGAR', time: '04:10 PM', resTime: '16:10' });
+            }
+
+            const todayIST = SattaDateEngine.getTodayIST();
+
+            // Populate Year Selects
+            const yearSelects = ['pub-year', 'single-edit-year'];
+            yearSelects.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.innerHTML = '';
+                    for (let y = parseInt(todayIST.yearStr, 10); y >= 2016; y--) {
+                        el.innerHTML += `<option value="${y}">${y}</option>`;
+                    }
+                    el.value = todayIST.yearStr;
+                }
+            });
+
+            // Populate Day Selects
+            const daySelects = ['pub-day', 'single-edit-day'];
+            daySelects.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.innerHTML = '';
+                    for (let i = 1; i <= 31; i++) {
+                        const val = i.toString().padStart(2, '0');
+                        el.innerHTML += `<option value="${val}">${val}</option>`;
+                    }
+                    el.value = todayIST.dayStr;
+                }
+            });
+
+            const pubMonthSelect = document.getElementById('pub-month');
+            const singleMonthSelect = document.getElementById('single-edit-month');
+            if (pubMonthSelect) pubMonthSelect.value = todayIST.monthStr;
+            if (singleMonthSelect) singleMonthSelect.value = todayIST.monthStr;
+
+            loadDNData();
+            loadDNPinBadge();
+            loadDNSingleChartData();
+            listenDNStatus();
+        }
+
+        let lastLoadedToday = 'XX';
+        function loadDNData() {
+            const year = document.getElementById('pub-year').value;
+            const month = document.getElementById('pub-month').value;
+            const day = document.getElementById('pub-day').value;
+
+            db.ref('results/DN').once('value', function(snap) {
+                const data = snap.val();
+                if (data) {
+                    lastLoadedToday = data.today || 'XX';
+                    document.getElementById('today-val').value = (data.today === 'XX' || data.today === '---') ? '' : data.today;
+                    document.getElementById('yesterday-val').value = (data.yesterday === 'XX' || data.yesterday === '---') ? '' : data.yesterday;
+                    document.getElementById('is-live').checked = !!data.live;
+                    document.getElementById('show-instantly').checked = !!data.showInstantly;
+                }
+            });
+        }
+
+        function publishDN() {
+            const today = document.getElementById('today-val').value.trim() || 'XX';
+            const yesterday = document.getElementById('yesterday-val').value.trim() || '--';
+            const isLive = document.getElementById('is-live').checked;
+            const showInstantly = document.getElementById('show-instantly').checked;
+
+            const targetYear = document.getElementById('pub-year').value;
+            const targetMonth = document.getElementById('pub-month').value;
+            const targetDay = document.getElementById('pub-day').value;
+
+            const todayIST = SattaDateEngine.getTodayIST();
+            const isTargetToday = (targetYear === todayIST.yearStr && targetMonth === todayIST.monthStr && targetDay === todayIST.dayStr);
+
+            let publishTimestamp = Date.now();
+            if (!isTargetToday) {
+                const customDate = new Date(`${targetYear}-${targetMonth}-${targetDay}T12:00:00+05:30`);
+                publishTimestamp = customDate.getTime();
+            }
+
+            db.ref('results/DN').once('value', function(snap) {
+                const oldData = snap.val() || {};
+
+                const payload = {
+                    name: "DELHI NAGAR",
+                    time: "04:10 PM",
+                    today: today,
+                    yesterday: yesterday,
+                    live: isLive,
+                    showInstantly: showInstantly,
+                    updatedAt: publishTimestamp
+                };
+
+                if (oldData.position !== undefined) payload.position = oldData.position;
+                if (oldData.isPinned !== undefined) payload.isPinned = oldData.isPinned;
+                if (oldData.badge !== undefined) payload.badge = oldData.badge;
+
+                db.ref('results/DN').update(payload).then(function() {
+                    db.ref(`charts/${targetYear}/${targetMonth}/${targetDay}/DN`).set(today);
+
+                    const status = document.getElementById('status');
+                    status.innerText = `✅ Published Delhi Nagar: Today=${today}, Yesterday=${yesterday}! Date=${targetDay}-${targetMonth}-${targetYear}`;
+                    status.classList.remove('hidden');
+                    status.style.display = 'block';
+                    setTimeout(() => { status.style.display = 'none'; }, 4000);
+                    alert(`Delhi Nagar Result Published for Date ${targetDay}-${targetMonth}-${targetYear}! 🚀`);
+                });
+            });
+        }
+
+        function loadDNPinBadge() {
+            db.ref('results/DN').once('value', function(snap) {
+                const data = snap.val();
+                if (data) {
+                    const posSelect = document.getElementById('standalone-position-select');
+                    const pinCheck = document.getElementById('standalone-is-pinned');
+                    const badgeSelect = document.getElementById('standalone-badge-select');
+                    const customBadgeInput = document.getElementById('standalone-custom-badge-text');
+
+                    if (posSelect) posSelect.value = (data.position !== undefined) ? data.position : (data.isPinned ? 1 : 0);
+                    if (pinCheck) pinCheck.checked = (data.position && data.position > 0) ? true : !!data.isPinned;
+
+                    if (badgeSelect) {
+                        const bVal = data.badge || 'AUTO';
+                        const presetOptions = ['AUTO', 'NONE', 'LIVE ⚡', 'NEW ⚡', 'NEXT ⏳', 'HOT 🔥', 'LEAK 💥', 'JACKPOT 💰'];
+                        if (presetOptions.includes(bVal)) {
+                            badgeSelect.value = bVal;
+                            if (customBadgeInput) customBadgeInput.classList.add('hidden');
+                        } else {
+                            badgeSelect.value = 'CUSTOM';
+                            if (customBadgeInput) {
+                                customBadgeInput.value = bVal;
+                                customBadgeInput.classList.remove('hidden');
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function saveDNPinBadge() {
+            const posSelect = document.getElementById('standalone-position-select');
+            const position = posSelect ? parseInt(posSelect.value, 10) : 0;
+            const isPinned = position > 0 || document.getElementById('standalone-is-pinned').checked;
+
+            const badgeSelect = document.getElementById('standalone-badge-select');
+            let badge = badgeSelect ? badgeSelect.value : 'AUTO';
+            if (badge === 'CUSTOM') {
+                badge = document.getElementById('standalone-custom-badge-text').value.trim() || 'AUTO';
+            }
+
+            db.ref('settings/markets/DN').update({ position: position, isPinned: isPinned, badge: badge });
+            db.ref('results/DN').update({ position: position, isPinned: isPinned, badge: badge }).then(function() {
+                const status = document.getElementById('status');
+                status.innerText = `✅ Position (#${position}) & Badge (${badge}) Updated for Delhi Nagar!`;
+                status.classList.remove('hidden');
+                status.style.display = 'block';
+                setTimeout(() => { status.style.display = 'none'; }, 3000);
+                alert(`Position (#${position}) & Badge (${badge}) Updated for Delhi Nagar! 🚀`);
+            });
+        }
+
+        function loadDNSingleChartData() {
+            const y = document.getElementById('single-edit-year').value;
+            const m = document.getElementById('single-edit-month').value;
+            const d = document.getElementById('single-edit-day').value;
+
+            db.ref(`charts/${y}/${m}/${d}/DN`).once('value', function(snap) {
+                const val = snap.val();
+                const el = document.getElementById('single-edit-val');
+                if (el) el.value = (val && val !== 'XX' && val !== '---') ? val : '';
+            });
+        }
+
+        function saveDNSingleChartData() {
+            const y = document.getElementById('single-edit-year').value;
+            const m = document.getElementById('single-edit-month').value;
+            const d = document.getElementById('single-edit-day').value;
+            const val = document.getElementById('single-edit-val').value.trim() || 'XX';
+
+            db.ref(`charts/${y}/${m}/${d}/DN`).set(val).then(function() {
+                alert(`Delhi Nagar Chart Result (${val}) Saved for Date ${d}-${m}-${y}! 🎯`);
+            });
+        }
+
+        function syncPinFromPosition(posVal, pinElementId) {
+            const pinCheckbox = document.getElementById(pinElementId);
+            if (pinCheckbox) pinCheckbox.checked = (parseInt(posVal, 10) > 0);
+        }
+
+        function syncPositionFromPin(isPinned, posSelectId) {
+            const posSelect = document.getElementById(posSelectId);
+            if (posSelect) {
+                if (isPinned && posSelect.value === '0') posSelect.value = '1';
+                else if (!isPinned) posSelect.value = '0';
+            }
+        }
+
+        function toggleCustomBadgeInput(badgeVal, customInputId) {
+            const customInput = document.getElementById(customInputId);
+            if (customInput) {
+                if (badgeVal === 'CUSTOM') {
+                    customInput.classList.remove('hidden');
+                    customInput.focus();
+                } else {
+                    customInput.classList.add('hidden');
+                    customInput.value = '';
+                }
+            }
+        }
+
+        function resetForm() {
+            document.getElementById('today-val').value = '';
+            document.getElementById('yesterday-val').value = '';
+            document.getElementById('is-live').checked = false;
+            document.getElementById('show-instantly').checked = false;
+        }
+
+        function listenDNStatus() {
+            db.ref('results/DN').on('value', function(snap) {
+                const data = snap.val() || {};
+                const box = document.getElementById('dn-status-box');
+                if (box) {
+                    box.innerHTML = `
+                        <div class="flex justify-between items-center">
+                            <span>Today Result: <strong class="text-blue-700 text-base">${data.today || 'XX'}</strong></span>
+                            <span>Yesterday: <strong class="text-gray-700">${data.yesterday || '---'}</strong></span>
+                            <span>Live: <strong class="${data.live ? 'text-red-600' : 'text-gray-500'}">${data.live ? 'YES (Blinking)' : 'NO'}</strong></span>
+                        </div>
+                    `;
+                }
+            });
+        }
+    </script>
+</body>
+</html>
