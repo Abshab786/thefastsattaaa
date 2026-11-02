@@ -1115,25 +1115,6 @@
                 return { ...m, resM };
             }).sort((a, b) => a.resM - b.resM).map((m, idx) => ({ ...m, dynamicOrder: idx + 1 }));
 
-            // Auto-sync Delhi Nagar (DN) SAME TO SAME from Disawar (DS)
-            const dsData = appData['DS'] || {};
-            const dnData = appData['DN'] || {};
-            const dsHasToday = dsData.today && dsData.today !== 'XX' && dsData.today !== '---' && dsData.today !== '';
-            const dnHasToday = dnData.today && dnData.today !== 'XX' && dnData.today !== '---' && dnData.today !== '';
-
-            if (dsHasToday || !dnHasToday) {
-                appData['DN'] = {
-                    ...dnData,
-                    name: 'DELHI NAGAR',
-                    time: '04:10 PM',
-                    today: dsData.today || 'XX',
-                    yesterday: dsData.yesterday || dnData.yesterday || '---',
-                    updatedAt: dsData.updatedAt || Date.now(),
-                    live: false,
-                    showInstantly: true
-                };
-            }
-
             // Find max updatedAt timestamp among all declared markets today
             let newestDeclaredTimestamp = 0;
             marketsWithDynamicOrder.forEach(m => {
@@ -1627,17 +1608,10 @@
                 // Read directly from Firebase DB charts node for this specific date and market
                 let resVal = dayData ? (typeof dayData === 'object' ? dayData[mId] : null) : null;
 
-                // For current month (e.g. October 2026): ONLY show numbers explicitly uploaded by Admin in Firebase DB charts!
+                // For current month (e.g. November 2026): ONLY show numbers explicitly uploaded by Admin in Firebase DB charts!
                 if (selY === curY && selM === curM) {
                     if (resVal && resVal !== 'XX' && resVal !== '---' && resVal !== '' && resVal !== '--') {
                         return resVal; // Show Admin's published number!
-                    }
-                    // Auto-copy Disawar (DS) result into Delhi Nagar (DN) for current month chart
-                    if (mId === 'DN') {
-                        const dsVal = dayData ? (typeof dayData === 'object' ? dayData['DS'] : null) : null;
-                        if (dsVal && dsVal !== 'XX' && dsVal !== '---' && dsVal !== '' && dsVal !== '--') {
-                            return dsVal;
-                        }
                     }
                     return "XX"; // Not published by Admin yet -> ALWAYS XX!
                 }
